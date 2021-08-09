@@ -1,11 +1,11 @@
 import sys
 import threading
 from pynput import mouse
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget,
-                             QToolTip, QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QPushButton, QLabel)
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
-from PyQt5 import QtGui
+from PySide6.QtWidgets import (QWidget,
+                               QToolTip, QPushButton, QApplication, QHBoxLayout, QVBoxLayout, QPushButton, QLabel)
+from PySide6.QtGui import QFont
+from PySide6.QtCore import Qt, QPoint
+from PySide6 import QtGui
 
 
 class StoppableThread(threading.Thread):
@@ -70,7 +70,6 @@ class MousePopupWindow(QWidget):
                 dy = y - (height + 5)
 
             self.move(dx, dy)
-            print(x - width, y - height)
 
         listener = mouse.Listener(on_move=on_move)
         listener.start()
@@ -212,7 +211,7 @@ class SelectionModeWindow(QWidget):
     # called when the mouse button is pressed
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
-            self.oldPos = event.pos()
+            self.oldPos = event.globalPosition().toPoint()
 
     # called when the mouse button is released
     def mouseReleaseEvent(self, event):
@@ -223,17 +222,22 @@ class SelectionModeWindow(QWidget):
     def mouseMoveEvent(self, event):
         if not self.oldPos:
             return
-        delta = event.pos() - self.oldPos
-        self.move(self.pos() + delta)
+        globalPos = event.globalPosition().toPoint()
+        delta = QPoint(globalPos - self.oldPos)
+        self.move(self.x() + delta.x(), self.y() + delta.y())
+        self.oldPos = globalPos
 
     # called when you need to center the window
+
     def centerOnScreen(self):
         qtRectangle = self.frameGeometry()
-        centerPoint = QDesktopWidget().availableGeometry().center()
+        centerPoint = self.screen().availableGeometry().center()
+
         qtRectangle.moveCenter(centerPoint)
         self.move(qtRectangle.topLeft())
 
     # called when the mouse cursor hovers over the window
+
     def enterEvent(self, event):
         self.setWindowOpacity(1)
         self.popupMouseWindow.hide()
@@ -305,6 +309,7 @@ class SelectionModeWindow(QWidget):
 
 # if __name__ == '__main__':
 #     app = QApplication(sys.argv)
+#
 #     ex = SelectionModeWindow()
 #
 #     sys.exit(app.exec_())

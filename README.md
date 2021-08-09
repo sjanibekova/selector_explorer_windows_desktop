@@ -1,14 +1,21 @@
-Server (Запустить тестовый сервер в папке src)
-скрипт -> server_socketio_for_test 
-1) python server_socketio_for_test.py или через pycharm (run)
+0) Установить зависимости:
 
-Commands:
+   - Перейти в директорию где лежит requirements.txt 
+
+   - pip install -r requirements.txt
+
+
+1)Server (Запустить тестовый сервер в папке src)
+скрипт -> server_socketio_for_test 
+ -  python server_socketio_for_test.py или через pycharm (run)
+
+socketio commands (just type in console):
 > start_selector - запускает поиск селектора
 > ,далее должно появиться окошко выбора uia or win32 
 
-Client (Запустить клиента в папке src)
+2) Client (Запустить клиента в папке src)
 
-1) socket_io_client.py --e "http://localhost:8008/"
+- socket_io_client.py --e "http://localhost:8008/"
 
 Взаимодействие: 
 1) Они должны законнектиться 

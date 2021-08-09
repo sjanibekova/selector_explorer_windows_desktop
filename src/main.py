@@ -1,9 +1,9 @@
 import json
+import sys
 import time
 import io
 from pprint import pprint
 from tkinter import messagebox
-
 import pywinauto
 from ctypes.wintypes import tagPOINT
 import tkinter as tk
@@ -20,11 +20,11 @@ import backend_gui
 SELECTOR_VALUE_TO_SEND = None
 
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = SelectionModeWindow()
-
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+#     app = QApplication(sys.argv)
+#     ex = SelectionModeWindow()
+#
+#     sys.exit(app.exec_())
 def get_image_of_element(wrapper):
     """
         Encode image to base64
@@ -182,79 +182,86 @@ def clear_window_after_drawing():
     win32gui.InvalidateRect(hwnd, monitor, True)
 
 
+def test():
+    app = backend_gui.QApplication(sys.argv)
+
+    ex = backend_gui.SelectionModeWindow()
+    sys.exit(app.exec_())
+
+
 
 async def main(params):
 
+    test()
 
-    '''  заменить на PYQT модуль , проблема с threads '''
-    global SELECTOR_VALUE_TO_SEND
-    SELECTOR_VALUE_TO_SEND = None
-
-    import tkinter as tk
+    # '''  заменить на PYQT модуль , проблема с threads '''
+    # global SELECTOR_VALUE_TO_SEND
+    # SELECTOR_VALUE_TO_SEND = None
+    #
+    # import tkinter as tk
     sio = params["sio"]
+    #
+    #
+    # tkWindow = tk.Tk()
+    # tkWindow.geometry('250x130')
+    # tkWindow.title('Backend')
+    # error_label  = tk.Label(width=30, height=4,
+    #       bg='orange', text="Not found!\n"
+    #                         "Try another backend (uia/win32)")
+    #
+    #
+    # def on_closing():
+    #     global SELECTOR_VALUE_TO_SEND
+    #     if messagebox.askokcancel("Quit", "Do you want to quit?"):
+    #         SELECTOR_VALUE_TO_SEND = {"response":'You interrupted operation'}
+    #         SELECTOR_VALUE_TO_SEND = json.dumps(SELECTOR_VALUE_TO_SEND)
+    #         tkWindow.destroy()
+    #
+    # tkWindow.protocol("WM_DELETE_WINDOW", on_closing)
+    #
+    #
+    # def uia(backend='uia'):
+    #     variable = parse_selector(backend)
+    #     if variable == 'Not Found!' or variable == None:
+    #         error_label.pack()
+    #
+    #     if variable != 'Not Found!' and len(variable) > 1 and variable != None:
+    #         global SELECTOR_VALUE_TO_SEND
+    #         time.sleep(5)
+    #         error_label.pack()
+    #         SELECTOR_VALUE_TO_SEND = variable
+    #         tkWindow.destroy()
+    #         tkWindow.quit()
+    #
+    #
+    #
+    # def win32(backend='win32'):
+    #     variable = parse_selector(backend)
+    #     if variable == 'Not Found!' or variable == None:
+    #         error_label.pack()
+    #     elif variable != 'Not Found!' and len(variable) > 1 and variable != None:
+    #         global SELECTOR_VALUE_TO_SEND
+    #         SELECTOR_VALUE_TO_SEND = variable
+    #         tkWindow.destroy()
+    #         tkWindow.quit()
+    #
+    # button1 = tk.Button(tkWindow,
+    #                 text='uia',
+    #                 command=uia)
+    #
+    # button2 = tk.Button(tkWindow,
+    #                 text='win32',
+    #                 command=win32)
+    # button1.pack()
+    # button2.pack()
+    #
+    # tkWindow.mainloop()
+    #
 
 
-    tkWindow = tk.Tk()
-    tkWindow.geometry('250x130')
-    tkWindow.title('Backend')
-    error_label  = tk.Label(width=30, height=4,
-          bg='orange', text="Not found!\n"
-                            "Try another backend (uia/win32)")
+    # pprint(SELECTOR_VALUE_TO_SEND)
+    await sio.emit('info', {"asdasd"})
 
-
-    def on_closing():
-        global SELECTOR_VALUE_TO_SEND
-        if messagebox.askokcancel("Quit", "Do you want to quit?"):
-            SELECTOR_VALUE_TO_SEND = {"response":'You interrupted operation'}
-            SELECTOR_VALUE_TO_SEND = json.dumps(SELECTOR_VALUE_TO_SEND)
-            tkWindow.destroy()
-
-    tkWindow.protocol("WM_DELETE_WINDOW", on_closing)
-
-
-    def uia(backend='uia'):
-        variable = parse_selector(backend)
-        if variable == 'Not Found!' or variable == None:
-            error_label.pack()
-
-        if variable != 'Not Found!' and len(variable) > 1 and variable != None:
-            global SELECTOR_VALUE_TO_SEND
-            time.sleep(5)
-            error_label.pack()
-            SELECTOR_VALUE_TO_SEND = variable
-            tkWindow.destroy()
-            tkWindow.quit()
-
-
-
-    def win32(backend='win32'):
-        variable = parse_selector(backend)
-        if variable == 'Not Found!' or variable == None:
-            error_label.pack()
-        elif variable != 'Not Found!' and len(variable) > 1 and variable != None:
-            global SELECTOR_VALUE_TO_SEND
-            SELECTOR_VALUE_TO_SEND = variable
-            tkWindow.destroy()
-            tkWindow.quit()
-
-    button1 = tk.Button(tkWindow,
-                    text='uia',
-                    command=uia)
-
-    button2 = tk.Button(tkWindow,
-                    text='win32',
-                    command=win32)
-    button1.pack()
-    button2.pack()
-
-    tkWindow.mainloop()
-
-
-    " все что выше заменить на PyQT "
-
-
-    pprint(SELECTOR_VALUE_TO_SEND)
-    await sio.emit('info', SELECTOR_VALUE_TO_SEND)
 
 
 
@@ -305,4 +312,4 @@ def parse_selector(backend):
         return error_message
 
 # if __name__ == '__main__':
-#     pp(main({"backend": 'win32'}))
+#    main({"backend": 'win32'})
