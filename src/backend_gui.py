@@ -136,8 +136,10 @@ class MousePopupWindow(QWidget):
 
 class SelectionModeWindow(QWidget):
 
-    def __init__(self):
+    def __init__(self, sio_in, gui_out):
         super().__init__()
+        self.sio_in = sio_in
+        self.gui_out = gui_out
 
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
         self.setWindowFlag(Qt.FramelessWindowHint)
@@ -189,6 +191,9 @@ class SelectionModeWindow(QWidget):
 
                 if not button.isChecked():
                     button.toggle()
+                    print('3333333333333333333')
+                    self.gui_out.put('uia')
+
             else:
                 if button.isChecked():
                     button.toggle()

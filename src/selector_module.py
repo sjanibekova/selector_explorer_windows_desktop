@@ -14,7 +14,7 @@ import base64
 import mouse
 import keyboard
 import comtypes
-import backend_gui
+
 
 SELECTOR_VALUE_TO_SEND = None
 
@@ -41,6 +41,8 @@ def get_image_of_element(wrapper):
     return im_b64
 
 
+
+
 # print(BackendStr_GetTopLevelList_UIOInfo())
 
 
@@ -65,6 +67,7 @@ def get_current_element_by_coordinates():
         return [None, None]
 
 
+
 def get_full_specification_of_element(element):
     """ Add full information into dictionary format
     :arg: element - pywinauto Element
@@ -74,9 +77,7 @@ def get_full_specification_of_element(element):
                          "title": element.name, "process_id": element.process_id, "rectangle": str(element.rectangle),
                          "rich_text": element.rich_text, "control_type": element.control_type,
                          # Не уверена что правильно
-                         "runtime_id": element.runtime_id, "class_name": element.class_name,
-                         "children": [{"ctrl_index": (index, element.name)} for index, element in
-                                      enumerate(element.children())]}
+                         "runtime_id": element.runtime_id, "class_name": element.class_name, "children": [{"ctrl_index":(index, element.name)} for index, element in enumerate(element.children())]}
     return full_element_info
 
 
@@ -87,7 +88,7 @@ def reindex_elements_in_tree(result):
     :param result: dict format of element specification
     :return: result_list reindexed
     """
-    result_list = [values for index, values in result.items()]
+    result_list = [values for index, values  in result.items()]
     # pp(result_list)
     # Убираем родителя для всех окон(рабочий стол) и оставляем спец окна
     reversed_result = list(reversed(result_list))[1:]
@@ -112,7 +113,7 @@ def get_element_tree_structure(element, wrapper):
         # Добавляем информацию о родителях по одному
 
         dict_of_tree[level] = get_full_specification_of_element(element_parent)
-        # обратись  к родителю
+            # обратись  к родителю
         element_parent = element_parent.parent
         parent_level_index = parent_level_index - 1
 
@@ -120,7 +121,7 @@ def get_element_tree_structure(element, wrapper):
     return dict_of_tree
 
 
-# has_depth(root, depth)
+#has_depth(root, depth)
 # Return True if element has particular depth level relative to the root
 #
 # def get_all_windows()
@@ -180,85 +181,8 @@ def clear_window_after_drawing():
     win32gui.InvalidateRect(hwnd, monitor, True)
 
 
-def test():
-    app = backend_gui.QApplication(sys.argv)
-
-    ex = backend_gui.SelectionModeWindow()
-    sys.exit(app.exec_())
-
-
-async def main(params):
-    test()
-
-    # '''  заменить на PYQT модуль , проблема с threads '''
-    # global SELECTOR_VALUE_TO_SEND
-    # SELECTOR_VALUE_TO_SEND = None
-    #
-    # import tkinter as tk
-    sio = params["sio"]
-    #
-    #
-    # tkWindow = tk.Tk()
-    # tkWindow.geometry('250x130')
-    # tkWindow.title('Backend')
-    # error_label  = tk.Label(width=30, height=4,
-    #       bg='orange', text="Not found!\n"
-    #                         "Try another backend (uia/win32)")
-    #
-    #
-    # def on_closing():
-    #     global SELECTOR_VALUE_TO_SEND
-    #     if messagebox.askokcancel("Quit", "Do you want to quit?"):
-    #         SELECTOR_VALUE_TO_SEND = {"response":'You interrupted operation'}
-    #         SELECTOR_VALUE_TO_SEND = json.dumps(SELECTOR_VALUE_TO_SEND)
-    #         tkWindow.destroy()
-    #
-    # tkWindow.protocol("WM_DELETE_WINDOW", on_closing)
-    #
-    #
-    # def uia(backend='uia'):
-    #     variable = parse_selector(backend)
-    #     if variable == 'Not Found!' or variable == None:
-    #         error_label.pack()
-    #
-    #     if variable != 'Not Found!' and len(variable) > 1 and variable != None:
-    #         global SELECTOR_VALUE_TO_SEND
-    #         time.sleep(5)
-    #         error_label.pack()
-    #         SELECTOR_VALUE_TO_SEND = variable
-    #         tkWindow.destroy()
-    #         tkWindow.quit()
-    #
-    #
-    #
-    # def win32(backend='win32'):
-    #     variable = parse_selector(backend)
-    #     if variable == 'Not Found!' or variable == None:
-    #         error_label.pack()
-    #     elif variable != 'Not Found!' and len(variable) > 1 and variable != None:
-    #         global SELECTOR_VALUE_TO_SEND
-    #         SELECTOR_VALUE_TO_SEND = variable
-    #         tkWindow.destroy()
-    #         tkWindow.quit()
-    #
-    # button1 = tk.Button(tkWindow,
-    #                 text='uia',
-    #                 command=uia)
-    #
-    # button2 = tk.Button(tkWindow,
-    #                 text='win32',
-    #                 command=win32)
-    # button1.pack()
-    # button2.pack()
-    #
-    # tkWindow.mainloop()
-    #
-
-    # pprint(SELECTOR_VALUE_TO_SEND)
-    await sio.emit('info', {"asdasd"})
-
-
-def parse_selector(backend, sio_out):
+def parse_selector(backend):
+    print('start')
     ''' подготовка окончательного готового селектора '''
     level_tree = search_selector_run(backend=backend)
     selector = []
@@ -293,10 +217,9 @@ def parse_selector(backend, sio_out):
                     iteration = i
                     result = {"control_item": str(same_list[i]), "selector": selector, "level_tree": level_tree}
         else:
-            print(str(same_list[0]))
             result = {"control_item": str(same_list[0]), "selector": selector, "level_tree": level_tree}
         data = json.dumps(result).encode('utf-8')
-
+        print(data)
         return data
 
     except pywinauto.findwindows.ElementNotFoundError:

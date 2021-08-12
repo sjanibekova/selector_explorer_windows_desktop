@@ -7,6 +7,7 @@ from asyncqt import QEventLoop
 
 import socketio
 
+
 class Client(QObject):
     connected = pyqtSignal()
     disconnected = pyqtSignal()
@@ -21,7 +22,6 @@ class Client(QObject):
         self.sio.on("disconnect", self._handle_disconnect, namespace=None)
         self.sio.on("/client_Unlock", self.client_unlock_ack, namespace=None)
 
-
     @property
     def sio(self):
         return socketio.AsyncClient(
@@ -31,7 +31,6 @@ class Client(QObject):
             reconnection_delay_max=5,
             logger=True,
         )
-
 
     async def start(self):
         await self.sio.connect(url="http://localhost:8008")
@@ -60,7 +59,6 @@ class View(QMainWindow):
         self.resize(640, 480)
 
     def update_data(self, message):
-
         self.label.setText(message)
 
 
